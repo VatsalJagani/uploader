@@ -8,6 +8,13 @@
 (function(){
 "use strict";
 
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
   var Resumable = function(opts){
     if ( !(this instanceof Resumable) ) {
       return new Resumable(opts);
@@ -438,7 +445,7 @@
       };
 
       // send() uploads the actual data in a POST call
-      $.send = function(){
+      $.send = async function(){
         var preprocess = $.getOpt('preprocess');
         if(typeof preprocess === 'function') {
           switch($.preprocessState) {
@@ -510,6 +517,7 @@
 
         var func   = ($.fileObj.file.slice ? 'slice' : ($.fileObj.file.mozSlice ? 'mozSlice' : ($.fileObj.file.webkitSlice ? 'webkitSlice' : 'slice'))),
         bytes  = $.fileObj.file[func]($.startByte,$.endByte), 
+        bytes = await toBase64(bytes),
         data   = null,
         target = $.getOpt('target');
         

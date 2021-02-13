@@ -31,6 +31,7 @@ jobs:
           cd uploader
           rm -rf .github
           rm -rf .git
+          rm -rf dist
           cd ..
           find uploader -type f -exec chmod 644 '{}' \;
           find uploader -type d -exec chmod 755 '{}' \;

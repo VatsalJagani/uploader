@@ -4,6 +4,7 @@ import json
 import logging
 import shutil
 import re
+import base64
 if (sys.version_info > (3, 0)):
      import functools   # only for python3
 
@@ -223,7 +224,7 @@ class Upload(splunk.rest.BaseRestHandler):
                         logger.warning('failed creating directory '+tempChunkDir + ' Reason: ' + str(e))
                         pass
 
-                newFile = open(tempChunkFilePath, 'a+')
+                newFile = open(tempChunkFilePath, 'ab')
                 
                 '''
                 # OLD
@@ -234,7 +235,7 @@ class Upload(splunk.rest.BaseRestHandler):
                     else:
                         break
                 '''
-                newFile.write(file)
+                newFile.write(base64.b64decode(file.split(",")[1]))
 
                 newFile.close()
                 shutil.move(tempChunkFilePath, chunkFilePath)
